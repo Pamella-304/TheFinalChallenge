@@ -28,7 +28,7 @@ class User {
 
 }
 
-class RecievingUser: User {
+class ReceivingUser: User {
     
     var availability: String
     var abcenses: [String]
@@ -89,51 +89,4 @@ class BuyingUser: User {
 
 
 
-
-
-
-
-
-//let recebedorRecord = CKRecord(recordType: "Recebedor")
-//
-//recebedorRecord["nome"] = "Maria da Silva"
-//recebedorRecord["endereco"] = "Rua das Flores, 123, São Paulo, SP, 01234-567"
-//recebedorRecord["telefone"] = "+55 (11) 99999-9999"
-//recebedorRecord["email"] = "maria@example.com"
-//recebedorRecord["disponibilidade"] = "Segunda a Sexta, 9h às 18h"
-//recebedorRecord["ausencias"] = ["2024-12-24", "2024-12-25"]
-//recebedorRecord["avaliacaoMedia"] = 4.8
-//recebedorRecord["numAvaliacoes"] = 20
-//recebedorRecord["comentarios"] = ["Serviço excelente!", "Recebedora muito atenciosa."]
-//recebedorRecord["capacidade"] = 10
-//recebedorRecord["tiposPacotes"] = ["Pequenos", "Médios"]
-//recebedorRecord["condicoesArmazenamento"] = "Ambiente seco e seguro"
-//recebedorRecord["localizacao"] = CLLocation(latitude: -23.5505, longitude: -46.6333)
-//recebedorRecord["verificacaoIdentidade"] = true
-//recebedorRecord["documentos"] = ["RG", "Comprovante de Residência"]
-//recebedorRecord["historicoPacotes"] = []  // Inicialmente vazio
-//recebedorRecord["statusAtual"] = "Disponível"
-
-
-
-
-
-
-//Classe para verificar se o app tem acesso ao database:
-//
-//class CloudKitAccesChecker {
-//    static func checkAccess() {
-//        
-//        let container = CKContainer.default()
-//        
-//        container.accountStatus { status, error in
-//            
-//            if status == .available {
-//                print("App tem acesso ao database")
-//            }
-//            
-//        }
-//    }
-//}
-//
 
