@@ -9,17 +9,17 @@ class User {
     //ainda é necessário definir um ID para identificação na nuvem
     let CPF: String
     var name: String
-    var adess: String
+    var adress: DeliveryAddress
     var phone: String
     var email: String
     var location: CLLocation
     var identifyVerified: Bool
 
     
-    init(CPF: String, name: String, adess: String, phone: String, email: String, location: CLLocation, identifyVerified: Bool) {
+    init(CPF: String, name: String, adress: DeliveryAddress, phone: String, email: String, location: CLLocation, identifyVerified: Bool) {
         self.CPF = CPF
         self.name = name
-        self.adess = adess
+        self.adress = adress
         self.phone = phone
         self.email = email
         self.location = location
@@ -66,12 +66,12 @@ class BuyingUser: User {
     var orderHistory: [Order] //ainda falta definir essa entidade
     var reviewsGiven: [Review] // ainda falta definir essa entidade
     var notificationsEnabled: Bool
-    var favoriteReceivers: [RecievingUser]?
+    var favoriteReceivers: [ReceivingUser]?
     var currentOrders: [Order]
     var loyaltyPoints: Int
     var savedPreferences: [String: Any]
 
-    init(preferredPickupLocation: String? = nil, paymentMethod: String? = nil, orderHistory: [Order], reviewsGiven: [Review], notificationsEnabled: Bool, favoriteReceivers: [RecievingUser]? = nil, currentOrders: [Order], loyaltyPoints: Int, savedPreferences: [String : Any]) {
+    init(preferredPickupLocation: String? = nil, paymentMethod: String? = nil, orderHistory: [Order], reviewsGiven: [Review], notificationsEnabled: Bool, favoriteReceivers: [ReceivingUser]? = nil, currentOrders: [Order], loyaltyPoints: Int, savedPreferences: [String : Any]) {
         self.preferredPickupLocation = preferredPickupLocation
         self.paymentMethod = paymentMethod
         self.orderHistory = orderHistory
@@ -86,7 +86,13 @@ class BuyingUser: User {
     
 }
 
-
+struct DeliveryAddress {
+    var street: String
+    var city: String
+    var state: String
+    var postalCode: String
+    var country: String
+}
 
 
 

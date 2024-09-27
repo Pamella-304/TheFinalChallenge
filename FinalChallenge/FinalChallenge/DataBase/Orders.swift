@@ -61,8 +61,6 @@ class OrderItem {
         self.quantity = quantity
         self.pricePerUnit = pricePerUnit
     }
-    
-    
 }
 
 
