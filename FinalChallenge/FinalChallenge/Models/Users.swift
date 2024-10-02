@@ -1,33 +1,39 @@
 
+import Foundation
+import CloudKit
+import SwiftData
 
-import CloudKit //Ainda não foi decidido se usaremos CloudKit ou SwiftData
-//não esquecer que é necessária persistência local além da remota
 
-
+// ao adiocionarmos esse modificador, já estamos definindo como será nosso data schema (só funciona com classes).
+@Model
 class User {
     
     //ainda é necessário definir um ID para identificação na nuvem
-    let CPF: String
+    var id = UUID().uuidString
+    var CPF: String
     var name: String
     var adress: DeliveryAddress
     var phone: String
     var email: String
-    var location: CLLocation
+    //var location: CLLocation
+    
     var identifyVerified: Bool
 
     
-    init(CPF: String, name: String, adress: DeliveryAddress, phone: String, email: String, location: CLLocation, identifyVerified: Bool) {
+    init(CPF: String, name: String, adress: DeliveryAddress, phone: String, email: String, identifyVerified: Bool) {
+        
         self.CPF = CPF
         self.name = name
         self.adress = adress
         self.phone = phone
         self.email = email
-        self.location = location
+       // self.location = location
         self.identifyVerified = false
     }
-
 }
 
+
+@Model
 class ReceivingUser: User {
     
     var availability: String
@@ -54,6 +60,10 @@ class ReceivingUser: User {
         self.documents = documents
         self.recievedPackagesHistory = recievedPackagesHistory
         self.currentStatus = currentStatus
+    }
+    
+    required init(backingData: any SwiftData.BackingData<User>) {
+        fatalError("init(backingData:) has not been implemented")
     }
     
 }
@@ -83,10 +93,14 @@ class BuyingUser: User {
         self.savedPreferences = savedPreferences
     }
     
+    required init(backingData: any SwiftData.BackingData<User>) {
+        fatalError("init(backingData:) has not been implemented")
+    }
+    
     
 }
 
-struct DeliveryAddress {
+struct DeliveryAddress: Codable {
     var street: String
     var city: String
     var state: String
@@ -94,5 +108,13 @@ struct DeliveryAddress {
     var country: String
 }
 
-
+func saveUserLocally(user: User, context: ModelContext) {
+    context.insert(user)
+    do {
+        try context.save()
+        print("User saved locally")
+    } catch {
+        print("Error saving user locally: \(error.localizedDescription)")
+    }
+}
 

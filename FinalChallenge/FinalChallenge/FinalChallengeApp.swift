@@ -9,11 +9,13 @@ import SwiftUI
 
 @main
 struct FinalChallengeApp: App {
-    
+
+    @Environment(\.modelContext) var modelContext
+
     var body: some Scene {
-        WindowGroup
+        WindowGroup{
             
-            ContentView()
+           
         }
     }
 }
