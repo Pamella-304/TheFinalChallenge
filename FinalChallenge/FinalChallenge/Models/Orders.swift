@@ -5,18 +5,18 @@
 //  Created by Pamella Alvarenga on 27/09/24.
 //
 
-import Foundation
-import CloudKit
+import SwiftData
+import SwiftUI
+import CoreLocation
 
-
-enum OrderStatus: String {
+enum OrderStatus: String, Codable {
     case processing = "Processing"
     case shipped = "Shipped"
     case delivered = "Delivered"
     case canceled = "Canceled"
 }
 
-
+@Model
 class Order {
     let orderID: UUID
     var orderDae: Date
@@ -29,10 +29,10 @@ class Order {
     var status: OrderStatus
     var trackingNumber: String?
     var deliveryAddress: String // escolher um tipo mais adequado futuramente
-    var deliveryLocation: CLLocation
+   // var deliveryLocation: CLLocation
     var notes: String?
     
-    init(orderID: UUID, orderDae: Date, deliveryDate: Date? = nil, buyer: BuyingUser, receiver: ReceivingUser? = nil, items: [OrderItem], totalAmount: Double, paymentMethod: String, status: OrderStatus, trackingNumber: String? = nil, deliveryAddress: String, deliveryLocation: CLLocation, notes: String? = nil) {
+    init(orderID: UUID, orderDae: Date, deliveryDate: Date? = nil, buyer: BuyingUser, receiver: ReceivingUser? = nil, items: [OrderItem], totalAmount: Double, paymentMethod: String, status: OrderStatus, trackingNumber: String? = nil, deliveryAddress: String, notes: String? = nil) {
         self.orderID = orderID
         self.orderDae = orderDae
         self.deliveryDate = deliveryDate
@@ -44,11 +44,13 @@ class Order {
         self.status = status
         self.trackingNumber = trackingNumber
         self.deliveryAddress = deliveryAddress
-        self.deliveryLocation = deliveryLocation
+     //   self.deliveryLocation = deliveryLocation
         self.notes = notes
     }
 }
 
+
+@Model
 class OrderItem {
     let itemID: UUID
     var productName: String

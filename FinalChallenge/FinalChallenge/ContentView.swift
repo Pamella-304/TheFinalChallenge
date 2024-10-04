@@ -6,7 +6,7 @@
 //
 
 
-import CloudKit
+//import CloudKit
 import SwiftUI
 import SwiftData
 
@@ -14,14 +14,12 @@ struct ContentView: View {
     
     @Environment(\.modelContext) var modelContext
     
-    //Variável de serviço para gerenciar o ususário
-    @StateObject var userService: UserService
-    
- 
+    @Query var receivingUsers: [ReceivingUser]
+    @Query var buyingUsers: [BuyingUser]
     
     var body: some View {
         
-        let userService = UserService(context: modelContext)
+        let userService = UserService()
 
            VStack {
                Text("Hello")
@@ -29,12 +27,12 @@ struct ContentView: View {
                Button(action: {
                    // Exemplo de criação de um novo usuário
                    let address = DeliveryAddress(street: "123 Main St", city: "São Paulo", state: "SP", postalCode: "12345-678", country: "Brazil")
-                   let location = CLLocation(latitude: -23.5505, longitude: -46.6333) // Localização de exemplo
+                  // let location = CLLocation(latitude: -23.5505, longitude: -46.6333) // Localização de exemplo
                    
-                   let newUser = User(CPF: "123.456.789-00", name: "Pamella Alvarenga", adress: address, phone: "99999-9999", email: "pamella@example.com", identifyVerified: false)
+                   let newUser = BuyingUser(CPF: "123.456.789-00", name: "Pamella Alvarenga", adress: address, phone: "99999-9999", email: "pamella@example.com", identifyVerified: false, preferredPickupLocation: nil, paymentMethod: nil, orderHistory: nil, reviewsGiven: [], notificationsEnabled: true, favoriteReceivers: nil, currentOrders: [], loyaltyPoints: 0, savedPreferences: "none")
                    
                    // Chamar o serviço para salvar o novo usuário
-                   userService.registerUser(user: newUser)
+                   userService.registerUser(user: newUser, context: modelContext)
                    
                }) {
                    Text("Salvar novo usuário")
@@ -42,6 +40,14 @@ struct ContentView: View {
                        .background(Color.blue)
                        .foregroundColor(.white)
                        .cornerRadius(8)
+               }
+               
+               List {
+                   ForEach(buyingUsers) { user in
+                       Text(user.name)
+                       Text(user.CPF)
+                       Text(user.adress.city)
+                   }
                }
            }
        }

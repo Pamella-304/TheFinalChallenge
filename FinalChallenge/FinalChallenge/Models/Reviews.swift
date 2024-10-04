@@ -6,9 +6,10 @@
 //
 
 import Foundation
-import CloudKit
+//import CloudKit
+import SwiftData
 
-enum ReviewRating: Int {
+enum ReviewRating: Int, Codable {
     case oneStar = 1
        case twoStars
        case threeStars
@@ -26,6 +27,7 @@ enum ReviewRating: Int {
        }
 }
 
+@Model
 class Review {
     let reviewID: String // ID único da avaliação
     let reviewer: BuyingUser // Usuário que escreveu a avaliação
