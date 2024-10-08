@@ -8,6 +8,7 @@
 
 /* Begin PBXFileReference section */
 		6115EBDF2CA190AF00255ABC /* FinalChallenge.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinalChallenge.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		61D504622CAD7185005CE43D /* VM_ContenteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VM_ContenteView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -46,6 +47,7 @@
 			isa = PBXGroup;
 			children = (
 				6115EBE12CA190AF00255ABC /* FinalChallenge */,
+				61D504612CAD716E005CE43D /* Justest */,
 				6115EBE02CA190AF00255ABC /* Products */,
 			);
 			sourceTree = "<group>";
@@ -56,6 +58,14 @@
 				6115EBDF2CA190AF00255ABC /* FinalChallenge.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		61D504612CAD716E005CE43D /* Justest */ = {
+			isa = PBXGroup;
+			children = (
+				61D504622CAD7185005CE43D /* VM_ContenteView.swift */,
+			);
+			path = Justest;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -146,7 +156,6 @@
 				CODE_SIGN_ENTITLEMENTS = FinalChallenge/FinalChallenge.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"FinalChallenge/Preview Content\"";
 				DEVELOPMENT_TEAM = 56QA9FYA3V;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -177,7 +186,6 @@
 				CODE_SIGN_ENTITLEMENTS = FinalChallenge/FinalChallenge.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"FinalChallenge/Preview Content\"";
 				DEVELOPMENT_TEAM = 56QA9FYA3V;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;

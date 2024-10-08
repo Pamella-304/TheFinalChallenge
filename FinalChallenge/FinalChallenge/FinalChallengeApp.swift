@@ -11,9 +11,9 @@ import SwiftUI
 struct FinalChallengeApp: App {
     
     var body: some Scene {
-        WindowGroup
-            
+        WindowGroup{
             ContentView()
         }
+        .modelContainer(for: [ReceivingUser.self, BuyingUser.self])
     }
 }

@@ -1,22 +1,51 @@
 
+import Foundation
+import CloudKit
+import SwiftData
 
-import CloudKit //Ainda não foi decidido se usaremos CloudKit ou SwiftData
-//não esquecer que é necessária persistência local além da remota
+
+protocol UserProtocol {
+    var id: String { get }
+       var CPF: String { get }
+       var name: String { get }
+       var adress: DeliveryAddress { get }
+       var phone: String { get }
+       var email: String { get }
+       var identifyVerified: Bool { get set }
+       
+}
 
 
-class User {
-    
-    //ainda é necessário definir um ID para identificação na nuvem
-    let CPF: String
+@Model
+class ReceivingUser: UserProtocol {
+   
+    @Attribute(.unique)
+    var id = UUID().uuidString
+    @Attribute(.unique)
+    var CPF: String
     var name: String
     var adress: DeliveryAddress
+    var collectionPoint: CollectionPoint
     var phone: String
     var email: String
     var location: CLLocation
     var identifyVerified: Bool
+    var availability: String
+    var abcenses: [String]
+    var mediumRate: Double
+    var reviewsReceived: [Review]
+    var comments: [String]
+    var storageCapacity: Int
+    var packagesTipe: [String]
+    var storageConditions: String
+    var currentOrders: [Order] = []
+    var documents: [CKAsset]
+    var recievedPackagesHistory: [CKRecord.Reference]
+    var currentStatus: String
 
     
-    init(CPF: String, name: String, adress: DeliveryAddress, phone: String, email: String, location: CLLocation, identifyVerified: Bool) {
+    init(CPF: String, name: String, adress: DeliveryAddress, phone: String, email: String, identifyVerified: Bool, availability: String, abcenses: [String], mediumRate: Double, comments: [String], storageCapacity: Int, packagesTipe: [String], storageConditions: String, currentStatus: String) {
+        
         self.CPF = CPF
         self.name = name
         self.adress = adress
@@ -24,29 +53,9 @@ class User {
         self.email = email
         self.location = location
         self.identifyVerified = false
-    }
-
-}
-
-class ReceivingUser: User {
-    
-    var availability: String
-    var abcenses: [String]
-    var mediumRate: Double
-    var numReviews: Int
-    var comments: [String]
-    var storageCapacity: Int
-    var packagesTipe: [String]
-    var storageConditions: String
-    var documents: [CKAsset]
-    var recievedPackagesHistory: [CKRecord.Reference]
-    var currentStatus: String
-    
-    init(availability: String, abcenses: [String], mediumRate: Double, numReviews: Int, comments: [String], storageCapacity: Int, packagesTipe: [String], storageConditions: String, documents: [CKAsset], recievedPackagesHistory: [CKRecord.Reference], currentStatus: String) {
         self.availability = availability
         self.abcenses = abcenses
         self.mediumRate = mediumRate
-        self.numReviews = numReviews
         self.comments = comments
         self.storageCapacity = storageCapacity
         self.packagesTipe = packagesTipe
@@ -56,26 +65,55 @@ class ReceivingUser: User {
         self.currentStatus = currentStatus
     }
     
+    func deleteUser(_ user: ReceivingUser, context: ModelContext) {
+        
+        if currentOrders.count > 0 {
+            for order in user.currentOrders {
+                context.delete(order)
+            }
+        }
+        context.delete(user)
+
+        try? context.save()
+
+    }
+    
 }
 
-
-class BuyingUser: User {
-     
-    var preferredPickupLocation: String? // alterar para um tipo mais dequado futuramente
+@Model
+class BuyingUser: UserProtocol {
+    
+    @Attribute(.unique)
+    var id = UUID().uuidString
+    @Attribute(.unique)
+    var CPF: String
+    var name: String
+    var adress: DeliveryAddress
+    var phone: String
+    var email: String
+    var location: CLLocation
+    var identifyVerified: Bool
+    var preferredPickupLocation: CollectionPoint?
     var paymentMethod: String? //alterar para um tipo mais adequado futuramente, talvez um enum
-    var orderHistory: [Order] //ainda falta definir essa entidade
-    var reviewsGiven: [Review] // ainda falta definir essa entidade
+    var orderHistory: [Order?] = []
     var notificationsEnabled: Bool
     var favoriteReceivers: [ReceivingUser]?
-    var currentOrders: [Order]
+    var currentOrders: [Order] = []
     var loyaltyPoints: Int
-    var savedPreferences: [String: Any]
+    var savedPreferences: String
 
-    init(preferredPickupLocation: String? = nil, paymentMethod: String? = nil, orderHistory: [Order], reviewsGiven: [Review], notificationsEnabled: Bool, favoriteReceivers: [ReceivingUser]? = nil, currentOrders: [Order], loyaltyPoints: Int, savedPreferences: [String : Any]) {
+    init(CPF: String, name: String, adress: DeliveryAddress, phone: String, email: String, identifyVerified: Bool, preferredPickupLocation: CollectionPoint? , paymentMethod: String? = nil, orderHistory: [Order], reviewsGiven: [Review]?, notificationsEnabled: Bool, favoriteReceivers: [ReceivingUser]? = nil, currentOrders: [Order], loyaltyPoints: Int, savedPreferences: String) {
+        
+        self.CPF = CPF
+        self.name = name
+        self.adress = adress
+        self.phone = phone
+        self.email = email
+        self.location = location
+        self.identifyVerified = false
         self.preferredPickupLocation = preferredPickupLocation
         self.paymentMethod = paymentMethod
         self.orderHistory = orderHistory
-        self.reviewsGiven = reviewsGiven
         self.notificationsEnabled = notificationsEnabled
         self.favoriteReceivers = favoriteReceivers
         self.currentOrders = currentOrders
@@ -83,10 +121,23 @@ class BuyingUser: User {
         self.savedPreferences = savedPreferences
     }
     
+    func deleteUser(_ user: BuyingUser, context: ModelContext) {
+        
+        if currentOrders.count > 0 {
+            for order in user.currentOrders {
+                context.delete(order)
+            }
+        }
+        context.delete(user)
+
+        try? context.save()
+
+    }
+
     
 }
 
-struct DeliveryAddress {
+struct DeliveryAddress: Codable {
     var street: String
     var city: String
     var state: String
@@ -94,5 +145,18 @@ struct DeliveryAddress {
     var country: String
 }
 
-
+func saveUserLocally(user: UserProtocol, context: ModelContext) {
+    if let userModel = user as? ReceivingUser {
+            context.insert(userModel)
+        } else if let userModel = user as? BuyingUser {
+            context.insert(userModel)
+        }
+    do {
+        try context.save()
+        print("User saved locally")
+    } catch {
+        print("Error saving user locally: \(error.localizedDescription)")
+    }
+    
+}
 
