@@ -6,8 +6,7 @@
 //
 
 import SwiftData
-import SwiftUI
-import CoreLocation
+import CloudKit
 
 enum OrderStatus: String, Codable {
     case processing = "Processing"
@@ -18,50 +17,61 @@ enum OrderStatus: String, Codable {
 
 @Model
 class Order {
+    
+    @Attribute(.unique)
     let orderID: UUID
-    var orderDae: Date
+    var orderDate: Date
     var deliveryDate: Date?
+    @Relationship(inverse: \BuyingUser.currentOrders)
     var buyer: BuyingUser
-    var receiver: ReceivingUser?
+    @Relationship(inverse: \ReceivingUser.currentOrders)
+    var receiver: ReceivingUser
+    @Relationship(inverse: \CollectionPoint.currentOrders)
+    var collectionPoint: CollectionPoint
+    
     var items: [OrderItem]
     var totalAmount: Double
     var paymentMethod: String
     var status: OrderStatus
     var trackingNumber: String?
     var deliveryAddress: String // escolher um tipo mais adequado futuramente
-   // var deliveryLocation: CLLocation
+    var deliveryLocation: CLLocation
     var notes: String?
     
-    init(orderID: UUID, orderDae: Date, deliveryDate: Date? = nil, buyer: BuyingUser, receiver: ReceivingUser? = nil, items: [OrderItem], totalAmount: Double, paymentMethod: String, status: OrderStatus, trackingNumber: String? = nil, deliveryAddress: String, notes: String? = nil) {
+    init(orderID: UUID, orderDate: Date, deliveryDate: Date? = nil, buyer: BuyingUser, receiver: ReceivingUser, collectionPoint: CollectionPoint, items: [OrderItem], totalAmount: Double, paymentMethod: String, status: OrderStatus, trackingNumber: String? = nil, deliveryAddress: String, notes: String? = nil) {
         self.orderID = orderID
-        self.orderDae = orderDae
+        self.orderDate = orderDate
         self.deliveryDate = deliveryDate
         self.buyer = buyer
         self.receiver = receiver
+        self.collectionPoint = collectionPoint
         self.items = items
         self.totalAmount = totalAmount
         self.paymentMethod = paymentMethod
         self.status = status
         self.trackingNumber = trackingNumber
         self.deliveryAddress = deliveryAddress
-     //   self.deliveryLocation = deliveryLocation
+        self.deliveryLocation = deliveryLocation
         self.notes = notes
     }
 }
 
 
 @Model
-class OrderItem {
+final class OrderItem {
+    
+    @Attribute(.unique)
     let itemID: UUID
     var productName: String
     var quantity: Int
-    var pricePerUnit: Double
     
-    init(itemID: UUID, productName: String, quantity: Int, pricePerUnit: Double) {
+    @Relationship(inverse: \Order.items)
+    var order: Order
+    
+    init(itemID: UUID, productName: String, quantity: Int) {
         self.itemID = itemID
         self.productName = productName
         self.quantity = quantity
-        self.pricePerUnit = pricePerUnit
     }
 }
 

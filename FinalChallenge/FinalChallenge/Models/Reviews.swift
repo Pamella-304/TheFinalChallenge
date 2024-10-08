@@ -6,7 +6,6 @@
 //
 
 import Foundation
-//import CloudKit
 import SwiftData
 
 enum ReviewRating: Int, Codable {
@@ -29,21 +28,44 @@ enum ReviewRating: Int, Codable {
 
 @Model
 class Review {
-    let reviewID: String // ID único da avaliação
-    let reviewer: BuyingUser // Usuário que escreveu a avaliação
-    let receiver: ReceivingUser // Usuário recebedor avaliado
-    var rating: ReviewRating // Avaliação dada
-    var comment: String? // Comentário opcional
-    var date: Date // Data em que a avaliação foi escrita
-    var order: Order // ID do pedido associado à avaliação
+    var reviewID: String // ID único da avaliação
     
-    init(reviewID: String, reviewer: BuyingUser, receiver: ReceivingUser, rating: ReviewRating, comment: String?, date: Date, order: Order) {
+    @Relationship(inverse: \BuyingUser.name)
+    let reviewer: BuyingUser // Usuário que escreveu a avaliação
+    
+    @Relationship(inverse: \ReceivingUser.name)
+    let receiver: ReceivingUser // Usuário recebedor avaliado
+    var rating: ReviewRating
+    var comment: String?
+    var date: Date
+    //var order: Order
+    
+    init(reviewID: String, reviewer: BuyingUser, receiver: ReceivingUser, rating: ReviewRating, comment: String?, date: Date) {
         self.reviewID = reviewID
         self.reviewer = reviewer
         self.receiver = receiver
         self.rating = rating
         self.comment = comment
         self.date = date
-        self.order = order
+//        self.order = order
     }
+    
+    func addReview(from buyingUser: BuyingUser, to receivingUser: ReceivingUser, context: ModelContext, comment: String?) {
+        
+
+            let newReview = Review(reviewID: UUID().uuidString, reviewer: buyingUser, receiver: receivingUser, rating: .oneStar, comment: comment, date: Date())
+                                   
+        
+        receivingUser.reviewsReceived.append(newReview)
+        
+        context.insert(newReview)
+        
+        do {
+                try context.save()
+                print("Review added and saved successfully.")
+            } catch {
+                print("Failed to save review: \(error.localizedDescription)")
+            }
+    }
+    
 }
