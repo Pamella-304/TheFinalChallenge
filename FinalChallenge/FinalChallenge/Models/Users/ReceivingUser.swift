@@ -29,7 +29,7 @@ class ReceivingUser: UserProtocol, Codable {
     var abcenses: [String]
     var mediumRate: Double
     
-    @Relationship(inverse: \Review.receiver)
+   // @Relationship(inverse: \Review.receiver)
     var reviewsReceived: [Review]
     var comments: [String]
     var storageCapacity: Int

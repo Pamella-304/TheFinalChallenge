@@ -23,7 +23,8 @@ class BuyingUser: UserProtocol, Codable {
     var orderHistory: [Order] = []
     var notificationsEnabled: Bool
     var favoriteReceivers: [ReceivingUser]?
-    var currentOrders: [Order] = []
+    
+    @Relationship(deleteRule: .cascade) var currentOrders: [Order] = []
     var loyaltyPoints: Int
     var savedPreferences: String
     

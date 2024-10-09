@@ -15,18 +15,11 @@ struct FinalChallengeApp: App {
 
         var body: some Scene {
             WindowGroup {
-                if resetComplete {
                     ContentView()
                         .modelContainer(for: [ReceivingUser.self, BuyingUser.self])
-                } else {
-                    ProgressView("Resetting Data...") // Mostra um progresso enquanto reseta os dados
-                        .onAppear {
-                            resetLocalData()
-                        }
                 }
             }
-        }
-
+        
     
     func resetLocalData() {
         let fileManager = FileManager.default

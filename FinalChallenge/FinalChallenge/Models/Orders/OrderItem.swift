@@ -16,7 +16,7 @@ final class OrderItem: Codable {
     var productName: String
     var quantity: Int
 
-    @Relationship(inverse: \Order.items)
+   // @Relationship(inverse: \Order.items)
     var order: Order
     
     enum CodingKeys: String, CodingKey {

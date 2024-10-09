@@ -17,11 +17,11 @@ class Order: Codable {
     let orderID = UUID()
     var orderDate: Date
     var deliveryDate: Date?
-    @Relationship(inverse: \BuyingUser.currentOrders)
+   // @Relationship(inverse: \BuyingUser.currentOrders)
     var buyer: BuyingUser
-    @Relationship(inverse: \ReceivingUser.currentOrders)
+  //  @Relationship(inverse: \ReceivingUser.currentOrders)
     var receiver: ReceivingUser
-    @Relationship(inverse: \CollectionPoint.currentOrders)
+   // @Relationship(inverse: \CollectionPoint.currentOrders)
     var collectionPoint: CollectionPoint
     
     var items: [OrderItem]

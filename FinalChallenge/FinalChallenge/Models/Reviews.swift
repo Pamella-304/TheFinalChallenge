@@ -30,10 +30,10 @@ enum ReviewRating: Int, Codable {
 class Review: Codable {
     var reviewID: String // ID único da avaliação
     
-    @Relationship(inverse: \BuyingUser.name)
+    //@Relationship(inverse: \BuyingUser.id)
     let reviewer: BuyingUser // Usuário que escreveu a avaliação
     
-    @Relationship(inverse: \ReceivingUser.name)
+    //@Relationship(inverse: \ReceivingUser.id)
     let receiver: ReceivingUser // Usuário recebedor avaliado
     var rating: ReviewRating
     var comment: String?

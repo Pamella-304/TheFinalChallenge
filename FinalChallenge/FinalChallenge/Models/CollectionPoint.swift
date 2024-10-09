@@ -22,13 +22,13 @@ class CollectionPoint: Codable {
     var operatingHours: String
     var ratings: [Double]
     
-    @Relationship(inverse: \ReceivingUser.collectionPoint)
+ //   @Relationship(inverse: \ReceivingUser.collectionPoint)
     var associatedReceiver: ReceivingUser
     
-    @Relationship(inverse: \ReceivingUser.currentOrders)
+ //   @Relationship(inverse: \ReceivingUser.currentOrders)
     var currentOrders: [Order]
     
-    @Relationship(inverse: \ReceivingUser.currentStatus)
+ //   @Relationship(inverse: \ReceivingUser.currentStatus)
     var currentStatus: Bool
     
     
