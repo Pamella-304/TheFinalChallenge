@@ -29,7 +29,7 @@ struct ContentView: View {
                    let address = DeliveryAddress(street: "123 Main St", city: "São Paulo", state: "SP", postalCode: "12345-678", country: "Brazil")
                   // let location = CLLocation(latitude: -23.5505, longitude: -46.6333) // Localização de exemplo
                    
-                   let newUser = BuyingUser(CPF: "123.456.789-00", name: "Pamella Alvarenga", adress: address, phone: "99999-9999", email: "pamella@example.com", identifyVerified: false, preferredPickupLocation: nil, paymentMethod: nil, orderHistory: [], reviewsGiven: [], notificationsEnabled: true, favoriteReceivers: nil, currentOrders: [], loyaltyPoints: 0, savedPreferences: "none")
+                   let newUser = BuyingUser(CPF: "123.456.789-00", name: "Pamella Alvarenga", adress: address, phone: "99999-9999", email: "pamella@example.com",latitude: 0.0, longitude: 0.0, identifyVerified: false, preferredPickupLocation: nil, paymentMethod: nil, orderHistory: [], reviewsGi: [], notificationsEnabled: true, favoriteReceivers: nil, currentOrders: [], loyaltyPoints: 0, savedPreferences: "none")
                    
                    // Chamar o serviço para salvar o novo usuário
                    userService.registerUser(user: newUser, context: modelContext)
