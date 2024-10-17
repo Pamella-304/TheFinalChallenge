@@ -7,10 +7,8 @@ import SwiftData
 @Model
 class BuyingUser: UserProtocol, Codable {
     
-    @Attribute(.unique)
-    var id = UUID().uuidString
-    @Attribute(.unique)
-    var CPF: String
+    @Attribute(.unique) var id = UUID().uuidString
+    @Attribute(.unique) var CPF: String
     var name: String
     var adress: DeliveryAddress
     var phone: String
@@ -20,19 +18,21 @@ class BuyingUser: UserProtocol, Codable {
     var identifyVerified: Bool
     var preferredPickupLocation: CollectionPoint?
     var paymentMethod: String? //alterar para um tipo mais adequado futuramente, talvez um enum
-    var orderHistory: [Order] = []
+    var orderHistory: [Order]?
     var notificationsEnabled: Bool
     var favoriteReceivers: [ReceivingUser]?
     
-    @Relationship(deleteRule: .cascade) var currentOrders: [Order] = []
+    @Relationship(deleteRule: .cascade) var reviewsGiven = [Review]()
+    @Relationship(deleteRule: .cascade) var buyingUsercurrentOrders = [Order]()
+    
     var loyaltyPoints: Int
     var savedPreferences: String
     
     private enum CodingKeys: String, CodingKey {
-            case id, CPF, name, adress, phone, email, latitude, longitude, identifyVerified, preferredPickupLocation, paymentMethod, orderHistory, notificationsEnabled, favoriteReceivers, currentOrders, loyaltyPoints, savedPreferences
+            case id, CPF, name, adress, phone, email, latitude, longitude, identifyVerified, preferredPickupLocation, paymentMethod, orderHistory, notificationsEnabled, favoriteReceivers, buyingUsercurrentOrders, loyaltyPoints, savedPreferences
         }
     
-
+    
     required init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             self.id = try container.decode(String.self, forKey: .id)
@@ -49,12 +49,12 @@ class BuyingUser: UserProtocol, Codable {
             self.orderHistory = try container.decode([Order].self, forKey: .orderHistory)
             self.notificationsEnabled = try container.decode(Bool.self, forKey: .notificationsEnabled)
             self.favoriteReceivers = try container.decodeIfPresent([ReceivingUser].self, forKey: .favoriteReceivers)
-            self.currentOrders = try container.decode([Order].self, forKey: .currentOrders)
+            self.buyingUsercurrentOrders = try container.decode([Order].self, forKey: .buyingUsercurrentOrders)
             self.loyaltyPoints = try container.decode(Int.self, forKey: .loyaltyPoints)
             self.savedPreferences = try container.decode(String.self, forKey: .savedPreferences)
         }
     
-    init(CPF: String, name: String, adress: DeliveryAddress, phone: String, email: String,latitude: Double, longitude: Double, identifyVerified: Bool, preferredPickupLocation: CollectionPoint? , paymentMethod: String? = nil, orderHistory: [Order], reviewsGi ven: [Review]?, notificationsEnabled: Bool, favoriteReceivers: [ReceivingUser]? = nil, currentOrders: [Order], loyaltyPoints: Int, savedPreferences: String) {
+    init(CPF: String, name: String, adress: DeliveryAddress, phone: String, email: String,latitude: Double, longitude: Double, identifyVerified: Bool, preferredPickupLocation: CollectionPoint? , paymentMethod: String? = nil, orderHistory: [Order], reviewsGi ven: [Review]?, notificationsEnabled: Bool, favoriteReceivers: [ReceivingUser]? = nil, buyingUsercurrentOrders: [Order], loyaltyPoints: Int, savedPreferences: String) {
         
         self.CPF = CPF
         self.name = name
@@ -69,7 +69,7 @@ class BuyingUser: UserProtocol, Codable {
         self.orderHistory = orderHistory
         self.notificationsEnabled = notificationsEnabled
         self.favoriteReceivers = favoriteReceivers
-        self.currentOrders = currentOrders
+        self.buyingUsercurrentOrders = buyingUsercurrentOrders
         self.loyaltyPoints = loyaltyPoints
         self.savedPreferences = savedPreferences
     }
@@ -96,18 +96,13 @@ extension BuyingUser {
            try container.encode(orderHistory, forKey: .orderHistory)
            try container.encode(notificationsEnabled, forKey: .notificationsEnabled)
            try container.encode(favoriteReceivers, forKey: .favoriteReceivers)
-           try container.encode(currentOrders, forKey: .currentOrders)
+           try container.encode(buyingUsercurrentOrders, forKey: .buyingUsercurrentOrders)
            try container.encode(loyaltyPoints, forKey: .loyaltyPoints)
            try container.encode(savedPreferences, forKey: .savedPreferences)
        }
     
     func deleteUser(_ user: BuyingUser, context: ModelContext) {
         
-        if currentOrders.count > 0 {
-            for order in user.currentOrders {
-                context.delete(order)
-            }
-        }
         context.delete(user)
 
         try? context.save()

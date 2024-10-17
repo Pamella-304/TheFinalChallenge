@@ -22,22 +22,18 @@ class CollectionPoint: Codable {
     var operatingHours: String
     var ratings: [Double]
     
- //   @Relationship(inverse: \ReceivingUser.collectionPoint)
-    var associatedReceiver: ReceivingUser
+    @Relationship(inverse: \ReceivingUser.collectionPoint) var associatedReceiver: ReceivingUser?
     
- //   @Relationship(inverse: \ReceivingUser.currentOrders)
-    var currentOrders: [Order]
+    var collectionPointCurrentOrders: [Order]
     
- //   @Relationship(inverse: \ReceivingUser.currentStatus)
     var currentStatus: Bool
-    
     
     var averageRating: Double {
             return ratings.isEmpty ? 0.0 : ratings.reduce(0, +) / Double(ratings.count)
     }
     
     enum CodingKeys: String, CodingKey {
-            case pointID, address, latitude, longitude, capacity, operatingHours, ratings, associatedReceiver, currentOrders, currentStatus
+            case pointID, address, latitude, longitude, capacity, operatingHours, ratings, associatedReceiver, collectionPointCurrentOrders, currentStatus
         }
         
         required init(from decoder: Decoder) throws {
@@ -50,11 +46,11 @@ class CollectionPoint: Codable {
             self.operatingHours = try container.decode(String.self, forKey: .operatingHours)
             self.ratings = try container.decode([Double].self, forKey: .ratings)
             self.associatedReceiver = try container.decode(ReceivingUser.self, forKey: .associatedReceiver)
-            self.currentOrders = try container.decode([Order].self, forKey: .currentOrders)
+            self.collectionPointCurrentOrders = try container.decode([Order].self, forKey: .collectionPointCurrentOrders)
             self.currentStatus = try container.decode(Bool.self, forKey: .currentStatus)
         }
     
-    init(address: DeliveryAddress, latitude: Double ,longitude: Double, capacity: Int, operatingHours: String, associatedReceiver: ReceivingUser, ratings: [Double]) {
+    init(address: DeliveryAddress, latitude: Double ,longitude: Double, capacity: Int, operatingHours: String, associatedReceiver: ReceivingUser, ratings: [Double], collectionPointCurrentOrders: [Order]) {
         self.pointID = UUID()
         self.address = address
         self.latitude = latitude
@@ -63,7 +59,7 @@ class CollectionPoint: Codable {
         self.operatingHours = operatingHours
         self.ratings = []
         self.associatedReceiver = associatedReceiver
-        self.currentOrders = []
+        self.collectionPointCurrentOrders = []
         self.currentStatus = false
        }
     
@@ -83,7 +79,7 @@ extension CollectionPoint {
             try container.encode(operatingHours, forKey: .operatingHours)
             try container.encode(ratings, forKey: .ratings)
             try container.encode(associatedReceiver, forKey: .associatedReceiver)
-            try container.encode(currentOrders, forKey: .currentOrders)
+            try container.encode(collectionPointCurrentOrders, forKey: .collectionPointCurrentOrders)
             try container.encode(currentStatus, forKey: .currentStatus)
         }
     

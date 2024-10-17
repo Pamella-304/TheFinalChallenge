@@ -16,8 +16,7 @@ final class OrderItem: Codable {
     var productName: String
     var quantity: Int
 
-   // @Relationship(inverse: \Order.items)
-    var order: Order
+    @Relationship(deleteRule: .cascade, inverse: \Order.items) var order: Order?
     
     enum CodingKeys: String, CodingKey {
         case itemID, productName, quantity, order

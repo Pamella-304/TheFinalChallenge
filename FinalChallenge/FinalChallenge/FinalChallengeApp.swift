@@ -6,25 +6,46 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct FinalChallengeApp: App {
     
-    
-    @State private var resetComplete = false // Controla o reset
-
-        var body: some Scene {
-            WindowGroup {
-                    ContentView()
-                        .modelContainer(for: [ReceivingUser.self, BuyingUser.self])
-                }
-            }
+    @MainActor
+    var sharedModelContainer: ModelContainer = {
+     
+        let schema = Schema([ReceivingUser.self, BuyingUser.self])
+        let config = ModelConfiguration(schema: schema, cloudKitDatabase: .none)
         
+        do {
+            return try ModelContainer(for: schema, configurations: [config])
+        } catch {
+            fatalError("Error: \(error.localizedDescription)")
+        }
+    }()
+
+    init() {
+        resetLocalData() // Limpa os dados ao iniciar o app
+    }
+    
+    var body: some Scene {
+        WindowGroup {
+            
+            ContentView()
+            
+        }
+        .modelContainer(sharedModelContainer)
+        
+    }
+    
     
     func resetLocalData() {
         let fileManager = FileManager.default
         
         if let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first {
+            
+            print("Document Directory: \(documentsDirectory)")  // Exibe o diretório de documentos
+
             do {
                 // Apagar todos os arquivos .sqlite e associados (jornal, wal)
                 let sqlitePaths = ["FinalChallenge.sqlite", "FinalChallenge.sqlite-shm", "FinalChallenge.sqlite-wal"]

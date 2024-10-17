@@ -19,7 +19,8 @@ class ReceivingUser: UserProtocol, Codable {
     var CPF: String
     var name: String
     var adress: DeliveryAddress
-    var collectionPoint: CollectionPoint
+    
+    var collectionPoint: CollectionPoint?
     var phone: String
     var email: String
     var latitude: Double
@@ -29,19 +30,23 @@ class ReceivingUser: UserProtocol, Codable {
     var abcenses: [String]
     var mediumRate: Double
     
-   // @Relationship(inverse: \Review.receiver)
-    var reviewsReceived: [Review]
     var comments: [String]
     var storageCapacity: Int
     var packagesTipe: [String]
     var storageConditions: String
-    var currentOrders: [Order] = []
+    
+    
+    
+    @Relationship(deleteRule: .cascade) var receivingUserCurrentOrders = [Order]()
+    @Relationship(deleteRule: .cascade) var reviewsReceived = [Review]()
+
+    
     var documents: [String]
     var recievedPackagesHistory: [String]
-    var currentStatus: String
+    var receivingUserCurrentStatus: String
     
     enum CodingKeys: String, CodingKey {
-            case id, CPF, name, adress, collectionPoint, phone, email, latitude, longitude, identifyVerified, availability, abcenses, mediumRate, comments, storageCapacity, packagesTipe, storageConditions, currentOrders, documents, recievedPackagesHistory, currentStatus, reviewsReceived
+            case id, CPF, name, adress, collectionPoint, phone, email, latitude, longitude, identifyVerified, availability, abcenses, mediumRate, comments, storageCapacity, packagesTipe, storageConditions, receivingUserCurrentOrders, documents, recievedPackagesHistory, receivingUserCurrentStatus, reviewsReceived
         }
 
 
@@ -65,13 +70,13 @@ class ReceivingUser: UserProtocol, Codable {
                 self.storageCapacity = try container.decode(Int.self, forKey: .storageCapacity)
                 self.packagesTipe = try container.decode([String].self, forKey: .packagesTipe)
                 self.storageConditions = try container.decode(String.self, forKey: .storageConditions)
-                self.currentOrders = try container.decode([Order].self, forKey: .currentOrders)
+                self.receivingUserCurrentOrders = try container.decode([Order].self, forKey: .receivingUserCurrentOrders)
                 self.documents = try container.decode([String].self, forKey: .documents)
                 self.recievedPackagesHistory = try container.decode([String].self, forKey: .recievedPackagesHistory)
-                self.currentStatus = try container.decode(String.self, forKey: .currentStatus)
+                self.receivingUserCurrentStatus = try container.decode(String.self, forKey: .receivingUserCurrentStatus)
             }
     
-    init(CPF: String, name: String, adress: DeliveryAddress, phone: String, email: String, latitude: Double, longitude: Double, identifyVerified: Bool, availability: String, abcenses: [String], mediumRate: Double, comments: [String], storageCapacity: Int, packagesTipe: [String], storageConditions: String, currentStatus: String, documents: [String], recievedPackagesHistory: [String], collectionPoint: CollectionPoint) {
+    init(CPF: String, name: String, adress: DeliveryAddress, phone: String, email: String, latitude: Double, longitude: Double, identifyVerified: Bool, availability: String, abcenses: [String], mediumRate: Double, comments: [String], storageCapacity: Int, packagesTipe: [String], storageConditions: String, receivingUserCurrentStatus: String, documents: [String], recievedPackagesHistory: [String], collectionPoint: CollectionPoint, receivingUserCurrentOrders: [Order]) {
         
         self.CPF = CPF
         self.name = name
@@ -91,8 +96,9 @@ class ReceivingUser: UserProtocol, Codable {
         self.storageConditions = storageConditions
         self.documents = documents
         self.recievedPackagesHistory = recievedPackagesHistory
-        self.currentStatus = currentStatus
+        self.receivingUserCurrentStatus = receivingUserCurrentStatus
         self.reviewsReceived = []
+        self.receivingUserCurrentOrders = receivingUserCurrentOrders
     }
     
 }
@@ -101,8 +107,8 @@ class ReceivingUser: UserProtocol, Codable {
 extension ReceivingUser {
     
     func deleteUser(_ user: ReceivingUser, context: ModelContext) {
-        if currentOrders.count > 0 {
-            for order in user.currentOrders {
+        if receivingUserCurrentOrders.count > 0 {
+            for order in user.receivingUserCurrentOrders {
                 context.delete(order)
             }
         }
@@ -135,10 +141,10 @@ extension ReceivingUser {
                     try container.encode(storageCapacity, forKey: .storageCapacity)
                     try container.encode(packagesTipe, forKey: .packagesTipe)
                     try container.encode(storageConditions, forKey: .storageConditions)
-                    try container.encode(currentOrders, forKey: .currentOrders)
+                    try container.encode(receivingUserCurrentOrders, forKey: .receivingUserCurrentOrders)
                     try container.encode(documents, forKey: .documents)
                     try container.encode(recievedPackagesHistory, forKey: .recievedPackagesHistory)
-                    try container.encode(currentStatus, forKey: .currentStatus)
+                    try container.encode(receivingUserCurrentStatus, forKey: .receivingUserCurrentStatus)
         }
 }
 

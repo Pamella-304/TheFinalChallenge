@@ -17,14 +17,13 @@ class Order: Codable {
     let orderID = UUID()
     var orderDate: Date
     var deliveryDate: Date?
-   // @Relationship(inverse: \BuyingUser.currentOrders)
-    var buyer: BuyingUser
-  //  @Relationship(inverse: \ReceivingUser.currentOrders)
-    var receiver: ReceivingUser
-   // @Relationship(inverse: \CollectionPoint.currentOrders)
-    var collectionPoint: CollectionPoint
+    @Relationship(inverse: \BuyingUser.buyingUsercurrentOrders) var buyer: BuyingUser
     
-    var items: [OrderItem]
+    @Relationship(inverse: \ReceivingUser.receivingUserCurrentOrders) var receiver: ReceivingUser
+    var orderCollectionPoint: CollectionPoint
+    
+    @Relationship var items = [OrderItem]()
+    
     var totalAmount: Double
     var paymentMethod: String
     var status: OrderStatus
@@ -35,7 +34,7 @@ class Order: Codable {
     var notes: String?
     
     enum CodingKeys: String, CodingKey {
-            case orderID, orderDate, deliveryDate, buyer, receiver, collectionPoint, items, totalAmount, paymentMethod, status, trackingNumber, deliveryAddress, latitude, longitude, notes
+            case orderID, orderDate, deliveryDate, buyer, receiver, orderCollectionPoint, items, totalAmount, paymentMethod, status, trackingNumber, deliveryAddress, latitude, longitude, notes
         }
     
     required init(from decoder: Decoder) throws {
@@ -47,7 +46,7 @@ class Order: Codable {
             self.deliveryDate = try container.decodeIfPresent(Date.self, forKey: .deliveryDate)
             self.buyer = try container.decode(BuyingUser.self, forKey: .buyer)
             self.receiver = try container.decode(ReceivingUser.self, forKey: .receiver)
-            self.collectionPoint = try container.decode(CollectionPoint.self, forKey: .collectionPoint)
+        self.orderCollectionPoint = try container.decode(CollectionPoint.self, forKey: .orderCollectionPoint)
             self.items = try container.decode([OrderItem].self, forKey: .items)
             self.totalAmount = try container.decode(Double.self, forKey: .totalAmount)
             self.paymentMethod = try container.decode(String.self, forKey: .paymentMethod)
@@ -60,14 +59,14 @@ class Order: Codable {
         }
 
     
-    init(orderID: UUID, orderDate: Date, deliveryDate: Date? = nil, buyer: BuyingUser, receiver: ReceivingUser, collectionPoint: CollectionPoint, items: [OrderItem], totalAmount: Double, paymentMethod: String, status: OrderStatus, trackingNumber: String? = nil, deliveryAddress: String, latitude: Double, longitude: Double, notes: String? = nil) {
+    init(orderID: UUID, orderDate: Date, deliveryDate: Date? = nil, buyer: BuyingUser, receiver: ReceivingUser, orderCollectionPoint: CollectionPoint, items: [OrderItem], totalAmount: Double, paymentMethod: String, status: OrderStatus, trackingNumber: String? = nil, deliveryAddress: String, latitude: Double, longitude: Double, notes: String? = nil) {
         
         self.orderID = orderID
         self.orderDate = orderDate
         self.deliveryDate = deliveryDate
         self.buyer = buyer
         self.receiver = receiver
-        self.collectionPoint = collectionPoint
+        self.orderCollectionPoint = orderCollectionPoint
         self.items = items
         self.totalAmount = totalAmount
         self.paymentMethod = paymentMethod
@@ -98,7 +97,7 @@ extension Order {
         try container.encode(deliveryDate, forKey: .deliveryDate)
         try container.encode(buyer, forKey: .buyer)
         try container.encode(receiver, forKey: .receiver)
-        try container.encode(collectionPoint, forKey: .collectionPoint)
+        try container.encode(orderCollectionPoint, forKey: .orderCollectionPoint)
         try container.encode(items, forKey: .items)
         try container.encode(totalAmount, forKey: .totalAmount)
         try container.encode(paymentMethod, forKey: .paymentMethod)
